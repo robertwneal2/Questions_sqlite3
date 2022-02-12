@@ -1,3 +1,5 @@
+require_relative 'questions'
+
 class Question
 
     attr_accessor :id, :title, :body, :user_id

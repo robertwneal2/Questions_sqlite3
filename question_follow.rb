@@ -1,3 +1,5 @@
+require_relative 'questions'
+
 class QuestionFollow
 
     attr_accessor :id, :question_id, :user_id

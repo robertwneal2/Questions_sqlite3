@@ -1,3 +1,5 @@
+require_relative 'questions'
+
 class QuestionLike
 
     attr_accessor :id, :question_id, :user_id

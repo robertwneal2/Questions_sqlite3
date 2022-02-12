@@ -1,3 +1,5 @@
+require_relative 'questions'
+
 class User
 
     attr_accessor :id, :fname, :lname
