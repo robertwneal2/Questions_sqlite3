@@ -54,6 +54,25 @@ class QuestionFollow
         questions.map { |question| Question.new(question) }
     end
 
+    def self.most_followed_questions(n) #lists questions without any follow. use regular 'JOIN' to remove this feature
+        questions = QuestionsDatabase.instance.execute(<<-SQL, n)
+        SELECT
+            DISTINCT questions.id, questions.title, questions.body, questions.user_id
+        FROM
+            questions
+        LEFT JOIN
+            question_follows ON question_follows.question_id = questions.id
+        GROUP BY
+            questions.id
+        ORDER BY
+            COUNT(question_follows.user_id) DESC
+        LIMIT
+            ?
+        SQL
+
+        questions.map { |question| Question.new(question) }
+    end
+
     def initialize(options)
         @id = options['id']
         @question_id = options['question_id']
