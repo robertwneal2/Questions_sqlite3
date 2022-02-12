@@ -18,6 +18,42 @@ class QuestionFollow
         QuestionFollow.new(question_follow.first)
     end
 
+    def self.followers_for_question_id(question_id)
+        question = Question.find_by_id(question_id)
+        raise "#{question_id} not found in DB" unless question
+
+        users = QuestionsDatabase.instance.execute(<<-SQL, question.id)
+        SELECT
+            users.id, users.fname, users.lname
+        FROM
+            question_follows
+        JOIN
+            users ON question_follows.user_id = users.id
+        WHERE
+            question_follows.question_id = ?
+        SQL
+
+        users.map { |user| User.new(user) }
+    end
+
+    def self.followed_questions_for_user_id(user_id)
+        user = User.find_by_id(user_id)
+        raise "#{user_id} not found in DB" unless user
+
+        questions = QuestionsDatabase.instance.execute(<<-SQL, user.id)
+        SELECT
+            questions.id, questions.title, questions.body, questions.user_id
+        FROM
+            question_follows
+        JOIN
+            questions ON question_follows.question_id = questions.id
+        WHERE
+            question_follows.user_id = ?
+        SQL
+
+        questions.map { |question| Question.new(question) }
+    end
+
     def initialize(options)
         @id = options['id']
         @question_id = options['question_id']
