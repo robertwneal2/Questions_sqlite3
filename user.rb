@@ -72,4 +72,23 @@ class User
         likes_count/(question_count*1.0)
     end
 
+    def save
+        if self.id
+            QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
+            UPDATE
+                users
+            SET
+                fname = ?, lname = ?
+            WHERE
+                id = ?
+            SQL
+        else
+            QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
+            INSERT INTO
+                users (fname, lname)
+            VALUES
+                (?, ?)
+            SQL
+        end
+    end
 end
