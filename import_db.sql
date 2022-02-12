@@ -64,7 +64,8 @@ INSERT INTO
 VALUES
   ('Is Bert the best nickname for Robert?','The only correct answer is yes. Prove me wrong bitches.', 2),
   ('Can we kick Bert out of this group?', 'His obsession about his name is pretentious', 1),
-  ('Can''t we all just get along?', 'We''re all here to learn, let''s just be nice.', 4);
+  ('Can''t we all just get along?', 'We''re all here to learn, let''s just be nice.', 4),
+  ('Is my internet working?', 'Testing 123', 4);
 
 INSERT INTO
   question_follows (question_id, user_id)

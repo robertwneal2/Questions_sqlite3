@@ -29,6 +29,20 @@ class User
         User.new(user.first)
     end
 
+    def self.find_by_name(fname, lname)
+        user = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            fname = ? AND lname = ?
+        SQL
+        return nil unless user.length > 0
+
+        User.new(user.first)
+    end
+
     def initialize(options)
         @id = options['id']
         @fname = options['fname']
@@ -53,6 +67,22 @@ class Question
         return nil unless question.length > 0
 
         Question.new(question.first)
+    end
+
+    def self.find_by_author_id(author_id)
+        user = User.find_by_id(author_id)
+        raise "#{author_id} not found in DB" unless user
+
+        questions = QuestionsDatabase.instance.execute(<<-SQL, user.id)
+        SELECT
+            *
+        FROM
+            questions
+        WHERE
+            user_id = ?
+        SQL
+
+        questions.map { |question| Question.new(question) }
     end
 
     def initialize(options)
@@ -106,6 +136,38 @@ class Reply
         return nil unless reply.length > 0
 
         Reply.new(reply.first)
+    end
+
+    def self.find_by_user_id(user_id)
+        user = User.find_by_id(user_id)
+        raise "#{user_id} not found in DB" unless user
+        
+        replies = QuestionsDatabase.instance.execute(<<-SQL, user.id)
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            user_id = ?
+        SQL
+
+        replies.map { |reply| Reply.new(reply) }
+    end
+
+    def self.find_by_question_id(question_id)
+        question = Question.find_by_id(question_id)
+        raise "#{question_id} not found in DB" unless question
+        
+        replies = QuestionsDatabase.instance.execute(<<-SQL, question.id)
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            question_id = ?
+        SQL
+
+        replies.map { |reply| Reply.new(reply) }
     end
 
     def initialize(options)
